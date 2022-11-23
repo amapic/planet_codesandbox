@@ -4,8 +4,11 @@ import { useState, useRef, useLayoutEffect, useEffect } from "react";
 
 import { useLoader, useFrame } from "@react-three/fiber";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
-import * as THREE from "three";
-export function CardPlanet({ text, position, ...args }) {
+import *,{extrudeGeometry} as THREEimport { ExtrudeGeometry } from "three";
+ from "three";
+extend(ExtrudeGeometry)
+
+export default function CardPlanet({ text, position, ...args }) {
   const myMesh = useRef();
   const myMesh2 = useRef<typeof DREI.Text>();
 
@@ -57,7 +60,21 @@ export function CardPlanet({ text, position, ...args }) {
   //   },
   //   [text]
   // );
+  const loader = new THREE.FontLoader();
 
+  loader.load("fonts/helvetiker_regular.typeface.json", function (font) {
+    const geometry = new THREE.TextGeometry("Hello three.js!", {
+      font: font,
+      size: 80,
+      height: 5,
+      curveSegments: 12,
+      bevelEnabled: true,
+      bevelThickness: 10,
+      bevelSize: 8,
+      bevelOffset: 0,
+      bevelSegments: 5,
+    });
+  });
   return (
     <group>
       <mesh

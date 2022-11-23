@@ -3,7 +3,7 @@ import { Canvas, useFrame, useThree, extend } from "@react-three/fiber";
 import {
   Stats,
   OrbitControls,
-  Effects as EffectsComposer
+  Effects as EffectsComposer,
 } from "@react-three/drei";
 
 import { Debug, Physics, usePlane, useSphere } from "@react-three/cannon";
@@ -15,7 +15,7 @@ import { UnrealBloomPass } from "three-stdlib";
 import { useControls } from "leva";
 import { Effects } from "@react-three/drei";
 
-import AA, { Shape2, CardPlanet } from "./Text";
+import CardPlanet from "./Text";
 import Planet, { Tt } from "./Planet";
 import ItemList from "./LoopCreation";
 // import { Effects, BloomPerso } from "./Effects";
@@ -26,7 +26,7 @@ const ButtonChangeState = ({ infoEtoile, aa, ...args }) => {
   let IMAGES = [
     { rotation: 0, position: [-2, 1, 1], radius: 1, freq: 30, text: "Z" },
     { rotation: 45, position: [-1, 1, 1], radius: 2, freq: 60, text: "R" },
-    { rotation: 90, position: [-0, 1, 1], radius: 3, freq: 90, text: "T" }
+    { rotation: 90, position: [-0, 1, 1], radius: 3, freq: 90, text: "T" },
   ];
   return (
     <>
@@ -62,7 +62,7 @@ const Scene = () => {
       radius: 1,
       freq: 30,
       text: "A",
-      colorMap: "/earth.jpg"
+      colorMap: "/earth.jpg",
     },
     {
       rotation: 45,
@@ -70,7 +70,7 @@ const Scene = () => {
       radius: 2,
       freq: 60,
       text: ">TTT",
-      colorMap: "/earth.jpg"
+      colorMap: "/earth.jpg",
     },
     {
       rotation: 90,
@@ -78,8 +78,8 @@ const Scene = () => {
       radius: 3,
       freq: 90,
       text: "HHHHHHHHHHH",
-      colorMap: "/earth.jpg"
-    }
+      colorMap: "/earth.jpg",
+    },
   ];
 
   const [infoEtoile, setInfoEtoile] = useState(IMAGES);
@@ -120,13 +120,13 @@ const App = () => {
   // const aspect = useMemo(() => new three.Vector2(100, 100), []);
   const { intensity, radius } = useControls({
     intensity: { value: 1, min: 0, max: 1.5, step: 0.01 },
-    radius: { value: 0.4, min: 0, max: 1, step: 0.01 }
+    radius: { value: 0.4, min: 0, max: 1, step: 0.01 },
   });
   return (
     <div
       style={{
         height: "100vh",
-        width: "100vw"
+        width: "100vw",
       }}
     >
       <Canvas
@@ -135,7 +135,7 @@ const App = () => {
           near: 0.1,
           far: 1000,
           zoom: 1,
-          position: [4, 4, 4]
+          position: [4, 4, 4],
         }}
         onCreated={({ gl, camera }) => {
           gl.setClearColor("#252934");

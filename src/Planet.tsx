@@ -3,7 +3,7 @@ import { Canvas, useFrame, useThree, extend } from "@react-three/fiber";
 import {
   Stats,
   OrbitControls,
-  Effects as EffectsComposer
+  Effects as EffectsComposer,
 } from "@react-three/drei";
 
 import { Debug, Physics, usePlane, useSphere } from "@react-three/cannon";
@@ -16,7 +16,7 @@ import { useControls } from "leva";
 import { Effects } from "@react-three/drei";
 import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
-import AA, { CardPlanet } from "./Text";
+import CardPlanet from "./Text";
 
 export function Tt() {
   const colorMap = useLoader(TextureLoader, "/earth.jpg");
@@ -46,27 +46,27 @@ export default function Planet({ radius, image, ...args }) {
     }, 500);
   }, []);
 
-  const { pos, ...props } = useSpring({
-    pos: animDepart ? [1, 0, 1] : [2, 0, 2],
-    config: {
-      duration: "1s",
-      mass: 10,
-      tension: 1000,
-      friction: 300,
-      precision: 0.00001
-    }
-  });
+  // const { pos, ...props } = useSpring({
+  //   pos: animDepart ? [1, 0, 1] : [2, 0, 2],
+  //   config: {
+  //     duration: "1s",
+  //     mass: 10,
+  //     tension: 1000,
+  //     friction: 300,
+  //     precision: 0.00001
+  //   }
+  // });
 
   const [sphereRef, sphereApi] = useSphere(() => ({
     type: "Dynamic",
     mass: 0,
-    position: [0, 0, 0]
+    position: [0, 0, 0],
   }));
 
   const [cardRef, cardApi] = useSphere(() => ({
     type: "Dynamic",
     mass: 0,
-    position: [0, 0, 0]
+    position: [0, 0, 0],
   }));
 
   // useFrame(() => {
@@ -89,11 +89,11 @@ export default function Planet({ radius, image, ...args }) {
 
   return (
     <>
-      <animated.mesh ref={cardRef} position={pos}>
-        <CardPlanet {...args} position={pos} text={image.text} image={image} />
+      <animated.mesh ref={cardRef}>
+        <CardPlanet {...args} text={image.text} image={image} />
       </animated.mesh>
-      <animated.mesh ref={sphereRef} {...args} position={pos}>
-        <sphereBufferGeometry position={pos} args={[0.3, 32, 32]} />
+      <animated.mesh ref={sphereRef} {...args}>
+        <sphereBufferGeometry args={[0.3, 32, 32]} />
         <meshStandardMaterial
           map={colorMap}
           // color={[255, 10, 1]}
