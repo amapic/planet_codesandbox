@@ -29,7 +29,7 @@ export function Tt() {
   );
 }
 
-export default function Planet({ radius, image, ...args }) {
+export default function Planet({ image, ...args }) {
   const cube = useRef<three.Mesh>();
 
   const colorMap = useLoader(TextureLoader, image.colorMap);
@@ -38,13 +38,17 @@ export default function Planet({ radius, image, ...args }) {
   const [cardInc, setCardInc] = useState(0);
 
   const [animDepart, setanimDepart] = useState(true);
-
+  // console.log("aa");
   useEffect(() => {
     setTimeout(function () {
       //your code to be executed after 1 second
       setanimDepart(false);
     }, 500);
   }, []);
+
+  function UpdatePlanet() {
+    setanimDepart(false);
+  }
 
   // const { pos, ...props } = useSpring({
   //   pos: animDepart ? [1, 0, 1] : [2, 0, 2],
@@ -69,23 +73,24 @@ export default function Planet({ radius, image, ...args }) {
     position: [0, 0, 0],
   }));
 
-  // useFrame(() => {
-  //   // console.log('sphereRef position', sphereRef.current.position);
-  //   // console.log('sphereAPI position', sphereApi.position);
-  //   setSphereX((sphereX) => sphereX + 0.05);
-  //   sphereApi.position.set(
-  //     image.radius * Math.cos((sphereX * 2 * Math.PI) / image.freq),
-  //     0,
-  //     image.radius * Math.sin((sphereX * 2 * Math.PI) / image.freq)
-  //   );
+  useFrame(() => {
+    // console.log('sphereRef position', sphereRef.current.position);
+    // console.log('sphereAPI position', sphereApi.position);
 
-  //   sphereApi.rotation.set(0, sphereX, 0);
-  //   cardApi.position.set(
-  //     image.radius * Math.cos((sphereX * 2 * Math.PI) / image.freq),
-  //     0,
-  //     image.radius * Math.sin((sphereX * 2 * Math.PI) / image.freq)
-  //   );
-  // });
+    setSphereX((sphereX) => sphereX + 0.05);
+    sphereApi.position.set(
+      image.radius * Math.cos((sphereX * 2 * Math.PI) / image.freq),
+      0,
+      image.radius * Math.sin((sphereX * 2 * Math.PI) / image.freq)
+    );
+
+    sphereApi.rotation.set(0, sphereX, 0);
+    cardApi.position.set(
+      image.radius * Math.cos((sphereX * 2 * Math.PI) / image.freq),
+      0,
+      image.radius * Math.sin((sphereX * 2 * Math.PI) / image.freq)
+    );
+  });
 
   return (
     <>

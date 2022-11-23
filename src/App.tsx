@@ -27,6 +27,7 @@ const ButtonChangeState = ({ infoEtoile, aa, ...args }) => {
     { rotation: 0, position: [-2, 1, 1], radius: 1, freq: 30, text: "Z" },
     { rotation: 45, position: [-1, 1, 1], radius: 2, freq: 60, text: "R" },
     { rotation: 90, position: [-0, 1, 1], radius: 3, freq: 90, text: "T" },
+    { rotation: 90, position: [-0, 1, 1], radius: 4, freq: 90, text: "T" },
   ];
   return (
     <>
@@ -69,7 +70,7 @@ const Scene = () => {
       position: [-1, 1, 1],
       radius: 2,
       freq: 60,
-      text: ">TTT",
+      text: "B",
       colorMap: "/earth.jpg",
     },
     {
@@ -77,7 +78,7 @@ const Scene = () => {
       position: [-0, 1, 1],
       radius: 3,
       freq: 90,
-      text: "HHHHHHHHHHH",
+      text: "C",
       colorMap: "/earth.jpg",
     },
   ];
@@ -100,15 +101,7 @@ const Scene = () => {
       {/* <Effects /> */}
       {infoEtoile.map((image, i) => (
         <>
-          <Planet
-            key={i}
-            image={image}
-            rotationx={image.rotation}
-            rotationy={image.rotation}
-            position={image.position}
-            radius={image.radius}
-            colorMap={image.colorMap}
-          />
+          <Planet key={i} image={image} />
         </>
       ))}
     </>
@@ -149,11 +142,7 @@ const App = () => {
           {/* threshhold has to be 1, so nothing at all gets bloom by default */}
           <unrealBloomPass threshold={1} strength={intensity} radius={radius} />
         </Effects>
-        {/* <Camera /> */}
-        {/* <Shape color={[1, 4, 0.5]} position={[2, 0, 0]}>
-          <circleGeometry args={[0.8, 64]} />
-        </Shape> */}
-        {/* <Cube color={[1, 4, 0.5]} position={[-2, 1, 1]} /> */}
+
         <Stats />
         <OrbitControls />
         <Suspense fallback={null}>

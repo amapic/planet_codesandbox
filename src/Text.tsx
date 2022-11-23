@@ -2,11 +2,17 @@ import * as DREI from "@react-three/drei";
 import { Text } from "@react-three/drei";
 import { useState, useRef, useLayoutEffect, useEffect } from "react";
 
-import { useLoader, useFrame } from "@react-three/fiber";
+import { useLoader, useFrame, extend } from "@react-three/fiber";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
-import *,{extrudeGeometry} as THREEimport { ExtrudeGeometry } from "three";
- from "three";
-extend(ExtrudeGeometry)
+import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
+
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
+
+import roboto from "./Roboto_Regular.json";
+
+extend({ TextGeometry });
+
+import * as THREE from "three";
 
 export default function CardPlanet({ text, position, ...args }) {
   const myMesh = useRef();
@@ -29,52 +35,30 @@ export default function CardPlanet({ text, position, ...args }) {
   points.push(new THREE.Vector3(0, 0, 0));
 
   var lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-  var mmesh = new THREE.Mesh();
+  // var mmesh = new THREE.Mesh();
 
-  var boxGeometry = new THREE.BoxGeometry();
-  mmesh.boundingbox;
+  // var boxGeometry = new THREE.BoxGeometry();
+  // mmesh.boundingbox;
 
-  useLayoutEffect(() => {}, []);
-  var ggg = colorMap.url;
-  colorMap.format = "RGBAFormat";
+  // useLayoutEffect(() => {}, []);
+  // var ggg = colorMap.;
+  // colorMap.format = RGBAFormat;
   colorMap.needsUpdate = true;
-  const aspect = colorMap.image.width / colorMap.image.height;
+  // const aspect = colorMap.image.width / colorMap.image.height;
+  
+  
   useFrame(({ gl, scene, camera }) => {
     // myMesh2.current!.geometry.lookAt(0, 0, 0);
     // myMesh.current.BufferGeometry.computeBoundingBox();
     // myMesh2.current!.geometry.computeBoundingBox();
     // console.log(myMesh.current!.buffergeometry.getattribute("boundingbox"));
     if (hovered) {
-      // myMesh2.current!.parent.lookAt(camera.position);
+      myMesh2.current!.parent.lookAt(camera.position);
     }
   }, 1);
 
-  // useEffect(
-  //   ({ camera }) => {
-  //     // console.log(myMesh2.current);
-  //     if (hovered) {
-  //       myMesh2.current!.parent.lookAt(camera.position);
-  //     }
-  //     // console.log();
-  //     // var lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-  //   },
-  //   [text]
-  // );
-  const loader = new THREE.FontLoader();
+  const font = new FontLoader().parse(roboto);
 
-  loader.load("fonts/helvetiker_regular.typeface.json", function (font) {
-    const geometry = new THREE.TextGeometry("Hello three.js!", {
-      font: font,
-      size: 80,
-      height: 5,
-      curveSegments: 12,
-      bevelEnabled: true,
-      bevelThickness: 10,
-      bevelSize: 8,
-      bevelOffset: 0,
-      bevelSegments: 5,
-    });
-  });
   return (
     <group>
       <mesh
@@ -83,6 +67,7 @@ export default function CardPlanet({ text, position, ...args }) {
         scale={[4, 5, 2]}
         ref={myMesh}
         onPointerOver={(x) => {
+          x.stopPropagation(); //not to have 2 elements hovered in the same time
           hover(true);
           let hh = x.position;
           var vec = new THREE.Vector3();
@@ -133,12 +118,13 @@ export default function CardPlanet({ text, position, ...args }) {
         }}
         // fillOpacity={hovered ? 1 : 0}
       >
-        <boxGeometry geometry={[boxGeo[0], boxGeo[1], boxGeo[2]]} />
-        <meshStandardMaterial
+        {/* <boxGeometry geometry={[boxGeo[0], boxGeo[1], boxGeo[2]]} /> */}
+        <boxGeometry geometry={[1, 1, 1]} />
+        <meshBasicMaterial
           // fillOpacity={hovered ? 1 : 0}
           color="red"
-          // map={colorMap}
-          opacity={1}
+          map={colorMap}
+          opacity={0}
           // transparent
         />
       </mesh>
