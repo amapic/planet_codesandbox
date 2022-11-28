@@ -15,6 +15,8 @@ import { UnrealBloomPass } from "three-stdlib";
 import { useControls } from "leva";
 import { Effects, Stars } from "@react-three/drei";
 
+import BoxBlendGeometry from "./roundedRectangle";
+
 import CardPlanet from "./Text";
 import Planet from "./Planet";
 import ItemList from "./LoopCreation";
@@ -88,7 +90,7 @@ const Scene = () => {
   }, 1);
   const IMAGES = [
     {
-      rotation: 300,
+      rotation: 900,
       position: [-2, 1, 1],
       radius: 1,
       periode: 50,
@@ -97,19 +99,19 @@ const Scene = () => {
       internalRadius: 0.1,
     },
     {
-      rotation: 445,
+      rotation: 700,
       position: [-1, 1, 1],
       radius: 2,
-      periode: 50,
+      periode: 60,
       text: "B",
       colorMap: "/earth.jpg",
       internalRadius: 0.2,
     },
     {
-      rotation: 390,
+      rotation: 600,
       position: [-0, 1, 1],
       radius: 3,
-      periode: 70,
+      periode: 80,
       text: "C",
       colorMap: "/earth.jpg",
       internalRadius: 0.3,
@@ -127,9 +129,9 @@ const Scene = () => {
 
   return (
     <>
-      <gridHelper size={100} />
+      <gridHelper />
       <axesHelper />
-      <pointLight intensity={1.0} position={[5, 3, 5]} />
+      <pointLight intensity={1.0} position={[0, 0, 0]} />
       <Soleil infoEtoile={infoEtoile} aa={AA} position={[0, 0, 0]} />
       {/* <Cube position={[-2, 1, 1]} /> */}
       {/* <MyRotatingBox position={[-1, 1, 1]} /> */}
@@ -192,6 +194,12 @@ const App = () => {
         <Suspense fallback={null}>
           <Physics allowSleep={false} gravity={[0, 0, 0]}>
             <Scene />
+            <group rotation={[0.8, 0, 0.8]}>
+              <mesh position={[0.5, 0, 1]}>
+                <BoxBlendGeometry radius={0.4} />
+                <meshBasicMaterial color="red" />
+              </mesh>
+            </group>
             {/* <Tt /> */}
           </Physics>
         </Suspense>

@@ -119,6 +119,7 @@ export default function Planet({ compteur, image, ...args }) {
         />
       </animated.mesh>
       <animated.mesh
+      
         ref={sphereRef}
         {...args}
         onPointerOver={() => {
