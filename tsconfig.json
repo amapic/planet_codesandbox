@@ -9,5 +9,8 @@
     "downlevelIteration": true,
     "baseUrl": "src",
     "resolveJsonModule": true
+  },
+  "linterOptions": {
+    "exclude": ["./src/**/*"]
   }
 }

@@ -6,15 +6,15 @@ import { useLoader, useFrame, extend } from "@react-three/fiber";
 import { TextureLoader } from "three/src/loaders/TextureLoader";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 
-import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
+// import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 
 import roboto from "./Roboto_Regular.json";
 
-extend({ TextGeometry });
+// extend({ TextGeometry });
 
 import * as THREE from "three";
 
-export default function CardPlanet({ text, position, ...args }) {
+export default function CardPlanet({ text, position, hoveredd, ...args }) {
   const myMesh = useRef();
   const myMesh2 = useRef<typeof DREI.Text>();
 
@@ -22,8 +22,9 @@ export default function CardPlanet({ text, position, ...args }) {
 
   const [boxGeo, setBoxGeo] = useState([2, 2, 2]);
   const [hovered, hover] = useState(false);
+  const [texto, setTexto] = useState(text);
 
-  const colorMap = useLoader(TextureLoader, "/c.png");
+  const colorMap = useLoader(TextureLoader, "/b.png");
   // var isJPEG =
   //   colorMap.url.search(/\.(jpg|jpeg)$/) > 0 ||
   //   colorMap.url.search(/^data\:image\/jpeg/) === 0;
@@ -45,15 +46,14 @@ export default function CardPlanet({ text, position, ...args }) {
   // colorMap.format = RGBAFormat;
   colorMap.needsUpdate = true;
   // const aspect = colorMap.image.width / colorMap.image.height;
-  
-  
+
   useFrame(({ gl, scene, camera }) => {
-    // myMesh2.current!.geometry.lookAt(0, 0, 0);
-    // myMesh.current.BufferGeometry.computeBoundingBox();
-    // myMesh2.current!.geometry.computeBoundingBox();
-    // console.log(myMesh.current!.buffergeometry.getattribute("boundingbox"));
-    if (hovered) {
-      myMesh2.current!.parent.lookAt(camera.position);
+    if (hoveredd) {
+      myMesh2.current!.parent.lookAt(0, camera.position[1], 0);
+      //   camera.position[0],
+      //   0,
+      //   camera.position[2]
+      // );
     }
   }, 1);
 
@@ -69,41 +69,30 @@ export default function CardPlanet({ text, position, ...args }) {
         onPointerOver={(x) => {
           x.stopPropagation(); //not to have 2 elements hovered in the same time
           hover(true);
-          let hh = x.position;
+          // let hh = x.position;
           var vec = new THREE.Vector3();
           var box2 = new THREE.Box3().setFromObject(x.object);
           var boxx3 = new THREE.Box3();
-          x.object.getWorldPosition(vec);
-          // console.log(myMesh.getWorldPosition(hh));
+          x.object.getWorldPosition();
+
           console.log("object", box2);
           console.log("boxsize", box2.getSize(vec));
-          // console.log("ee", x.object.parent.geometry.computeBoundingBox());
-          // setBoxGeo(box2);
-
+          console.log("world_position", vec);
           const box = new THREE.BoxHelper(x.object, 0xffff00);
-          setBoxGeo(vec);
-          // console.log(
-          //   "ff",
-          //   myMesh2.current!.parent.geometry.getAttribute("boundingbox").getSize(hh);
-          // );
-          boxx3 = x.object.parent.geometry.boundingBox;
-          // console.log("ff", boxx3);
-          // console.log("gg", vec);
-          // boxx3.getSize(hh);
+          // setBoxGeo(vec);
+
+          // boxx3 = x.object.parent.geometry.boundingBox;
         }}
         onPointerOut={() => hover(false)}
       >
         <Text
-          scale={[5, 5, 5]}
+          scale={[1, 1, 1]}
           anchorX="center" // default
           anchorY="middle" // default
           color="white"
           ref={myMesh2}
-          fillOpacity={hovered ? 1 : 0}
-          onUpdate={(x) => {
-            // x.lookAt(3, 3, 3);
-            // console.log(x.getWorldPosition(tt));
-          }}
+          fillOpacity={hoveredd ? 1 : 0}
+          onUpdate={(x) => {}}
           // onUpdate={() => myMesh.current.lookAt([1, 10, 3])}
         >
           {text}
@@ -112,31 +101,25 @@ export default function CardPlanet({ text, position, ...args }) {
       <mesh
         position={[0, 2, 0]}
         // ref={myMesh2}
-        onUpdate={(x) => {
-          // x.lookAt(3, 3, 3);
-          // console.log(x.getWorldPosition(tt));
-        }}
+        onUpdate={(x) => {}}
         // fillOpacity={hovered ? 1 : 0}
+        onPointerOver={() => hover(true)}
+        onPointerOut={() => hover(false)}
+        ref={myMesh2}
       >
         {/* <boxGeometry geometry={[boxGeo[0], boxGeo[1], boxGeo[2]]} /> */}
-        <boxGeometry geometry={[1, 1, 1]} />
+        <planeGeometry geometry={[10, 10]} />
         <meshBasicMaterial
-          // fillOpacity={hovered ? 1 : 0}
           color="red"
           map={colorMap}
-          opacity={0}
-          // transparent
+          opacity={hoveredd ? 1 : 0}
+          transparent
         />
       </mesh>
-      <line geometry={lineGeometry}>
-        <lineBasicMaterial
-          attach="material"
-          color={"#9c88ff"}
-          linewidth={10}
-          linecap={"round"}
-          linejoin={"round"}
-        />
-      </line>
+      {/* <mesh>
+        <textGeometry args={["test", { font, size: 10, height: 10 }]} />
+        <meshPhysicalMaterial attach="material" color="white" />
+      </mesh> */}
     </group>
   );
 }

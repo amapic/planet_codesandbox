@@ -13,21 +13,51 @@ import { useSpring, animated, config } from "@react-spring/three";
 
 import { UnrealBloomPass } from "three-stdlib";
 import { useControls } from "leva";
-import { Effects } from "@react-three/drei";
+import { Effects, Stars } from "@react-three/drei";
 
 import CardPlanet from "./Text";
-import Planet, { Tt } from "./Planet";
+import Planet from "./Planet";
 import ItemList from "./LoopCreation";
 // import { Effects, BloomPerso } from "./Effects";
 import FrameLimiter, { FPSLimiter } from "./FrameLimiter";
 extend({ UnrealBloomPass });
 
-const ButtonChangeState = ({ infoEtoile, aa, ...args }) => {
-  let IMAGES = [
-    { rotation: 0, position: [-2, 1, 1], radius: 1, freq: 30, text: "Z" },
-    { rotation: 45, position: [-1, 1, 1], radius: 2, freq: 60, text: "R" },
-    { rotation: 90, position: [-0, 1, 1], radius: 3, freq: 90, text: "T" },
-    { rotation: 90, position: [-0, 1, 1], radius: 4, freq: 90, text: "T" },
+const Soleil = ({ infoEtoile, aa, ...args }) => {
+  // let IMAGES = [
+  //   { rotation: 0, position: [-2, 1, 1], radius: 1, freq: 30, text: "Z" },
+  //   { rotation: 45, position: [-1, 1, 1], radius: 2, freq: 60, text: "R" },
+  //   { rotation: 90, position: [-0, 1, 1], radius: 3, freq: 90, text: "T" },
+  //   { rotation: 90, position: [-0, 1, 1], radius: 4, freq: 90, text: "T" },
+  // ];
+
+  const IMAGES = [
+    {
+      rotation: 200,
+      position: [-2, 1, 1],
+      radius: 1,
+      periode: 50,
+      text: "A",
+      colorMap: "/earth.jpg",
+      internalRadius: 0.1,
+    },
+    {
+      rotation: 145,
+      position: [-1, 1, 1],
+      radius: 2,
+      periode: 50,
+      text: "B",
+      colorMap: "/earth.jpg",
+      internalRadius: 0.2,
+    },
+    {
+      rotation: 190,
+      position: [-0, 1, 1],
+      radius: 3,
+      periode: 70,
+      text: "C",
+      colorMap: "/earth.jpg",
+      internalRadius: 0.3,
+    },
   ];
   return (
     <>
@@ -35,13 +65,13 @@ const ButtonChangeState = ({ infoEtoile, aa, ...args }) => {
         // position={[Math.cos(sphereX), Math.sin(sphereX), 0]}
         {...args}
         onClick={(x) => {
-          infoEtoile.map((x) => (x.radius = x.radius + 1));
+          IMAGES.map((x) => (x.radius = x.radius + 1));
           // console.log(IMAGES);
-          aa(infoEtoile);
+          aa(IMAGES);
           // console.log(x.getWorldPosition(tt));
         }}
       >
-        <boxBufferGeometry args={[1, 1, 1]} />
+        <sphereBufferGeometry args={[0.5, 32, 32]} />
         <meshBasicMaterial color={[255, 10, 1]} toneMapped={false} />
       </animated.mesh>
     </>
@@ -58,50 +88,55 @@ const Scene = () => {
   }, 1);
   const IMAGES = [
     {
-      rotation: 0,
+      rotation: 300,
       position: [-2, 1, 1],
       radius: 1,
-      freq: 30,
+      periode: 50,
       text: "A",
       colorMap: "/earth.jpg",
+      internalRadius: 0.1,
     },
     {
-      rotation: 45,
+      rotation: 445,
       position: [-1, 1, 1],
       radius: 2,
-      freq: 60,
+      periode: 50,
       text: "B",
       colorMap: "/earth.jpg",
+      internalRadius: 0.2,
     },
     {
-      rotation: 90,
+      rotation: 390,
       position: [-0, 1, 1],
       radius: 3,
-      freq: 90,
+      periode: 70,
       text: "C",
       colorMap: "/earth.jpg",
+      internalRadius: 0.3,
     },
   ];
 
   const [infoEtoile, setInfoEtoile] = useState(IMAGES);
+  const [compteur, setCompteur] = useState(0);
 
   function AA(x) {
     setInfoEtoile(x);
-    console.log(x);
+    console.log(compteur);
+    setCompteur(compteur + 1);
   }
 
   return (
     <>
-      <gridHelper />
+      <gridHelper size={100} />
       <axesHelper />
       <pointLight intensity={1.0} position={[5, 3, 5]} />
-      <ButtonChangeState infoEtoile={infoEtoile} aa={AA} position={[1, 1, 1]} />
+      <Soleil infoEtoile={infoEtoile} aa={AA} position={[0, 0, 0]} />
       {/* <Cube position={[-2, 1, 1]} /> */}
       {/* <MyRotatingBox position={[-1, 1, 1]} /> */}
       {/* <Effects /> */}
       {infoEtoile.map((image, i) => (
         <>
-          <Planet key={i} image={image} />
+          <Planet compteur={compteur} key={i} image={image} />
         </>
       ))}
     </>
@@ -145,10 +180,19 @@ const App = () => {
 
         <Stats />
         <OrbitControls />
+        <Stars
+          radius={100}
+          depth={50}
+          count={5000}
+          factor={4}
+          saturation={0}
+          fade
+          speed={1}
+        />
         <Suspense fallback={null}>
           <Physics allowSleep={false} gravity={[0, 0, 0]}>
             <Scene />
-            <Tt />
+            {/* <Tt /> */}
           </Physics>
         </Suspense>
       </Canvas>
