@@ -22,6 +22,10 @@ import Planet from "./Planet";
 import ItemList from "./LoopCreation";
 // import { Effects, BloomPerso } from "./Effects";
 import FrameLimiter, { FPSLimiter } from "./FrameLimiter";
+
+import {Pass} from 'three';
+// import { SSAOPass } from "three/examples/jsm/postprocessing";
+// import { EffectComposer, SSAO, SMAA } from "@react-three/drei/po";
 extend({ UnrealBloomPass });
 
 const Soleil = ({ infoEtoile, aa, ...args }) => {
@@ -121,6 +125,7 @@ const Scene = () => {
   const [infoEtoile, setInfoEtoile] = useState(IMAGES);
   const [compteur, setCompteur] = useState(0);
 
+  const yy = three.PASS();
   function AA(x) {
     setInfoEtoile(x);
     console.log(compteur);
@@ -171,12 +176,15 @@ const App = () => {
           gl.setClearColor("#252934");
           camera.lookAt(0, 0, 0);
           camera.position.set(4, 4, 4);
+          console.log(window.devicePixelRatio);
         }}
       >
         {/* <FrameLimiter /> */}
         <FPSLimiter />
         <Effects disableGamma>
           {/* threshhold has to be 1, so nothing at all gets bloom by default */}
+
+          <PASS />
           <unrealBloomPass threshold={1} strength={intensity} radius={radius} />
         </Effects>
 
