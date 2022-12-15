@@ -20,11 +20,11 @@ import CardPlanet from "./Text";
 
 import create from "zustand";
 
-const useBearStore = create((set) => ({
-  bears: 0,
-  increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
-  removeAllBears: () => set({ bears: 0 }),
-}));
+// const useBearStore = create((set) => ({
+//   bears: 0,
+//   increasePopulation: () => set((state) => ({ bears: state.bears + 1 })),
+//   removeAllBears: () => set({ bears: 0 }),
+// }));
 
 // export function Tt() {
 //   const colorMap = useLoader(TextureLoader, "/earth.jpg");
@@ -38,7 +38,7 @@ const useBearStore = create((set) => ({
 // }
 
 export default function Planet({ compteur, image, ...args }) {
-  const cube = useRef<three.Mesh>();
+  const cube = useRef();
 
   const colorMap = useLoader(TextureLoader, image.colorMap);
 
@@ -119,7 +119,6 @@ export default function Planet({ compteur, image, ...args }) {
         />
       </animated.mesh>
       <animated.mesh
-      
         ref={sphereRef}
         {...args}
         onPointerOver={() => {

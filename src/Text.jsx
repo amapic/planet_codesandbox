@@ -16,7 +16,7 @@ import * as THREE from "three";
 
 export default function CardPlanet({ text, position, hoveredd, ...args }) {
   const myMesh = useRef();
-  const myMesh2 = useRef<typeof DREI.Text>();
+  const myMesh2 = useRef();
 
   var boxGeometry = new THREE.BoxGeometry();
 
@@ -49,7 +49,7 @@ export default function CardPlanet({ text, position, hoveredd, ...args }) {
 
   useFrame(({ gl, scene, camera }) => {
     if (hoveredd) {
-      myMesh2.current!.parent.lookAt(0, camera.position[1], 0);
+      myMesh2.current.parent.lookAt(0, camera.position[1], 0);
       //   camera.position[0],
       //   0,
       //   camera.position[2]

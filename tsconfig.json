@@ -8,7 +8,8 @@
     "jsx": "react-jsx",
     "downlevelIteration": true,
     "baseUrl": "src",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "checkJs": false
   },
   "linterOptions": {
     "exclude": ["./src/**/*"]

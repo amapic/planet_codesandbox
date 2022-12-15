@@ -8,13 +8,15 @@
     "@react-three/cannon": "*",
     "@react-three/drei": "9.7.2",
     "@react-three/fiber": "8.0.6",
+    "@react-three/postprocessing": "^2.7.0",
     "@types/three": "0.139.0",
     "leva": "0.9.25",
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-scripts": "5.0.0",
     "three": "0.139.2",
-    "three-gltf-loader": "*"
+    "three-gltf-loader": "*",
+    "three-stdlib": "*"
   },
   "devDependencies": {
     "@types/react": "17.0.0",
