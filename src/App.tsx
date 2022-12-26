@@ -1,170 +1,125 @@
-import React, { Suspense, useRef, useEffect, useState } from "react";
-import { Canvas, useFrame, useThree, extend } from "@react-three/fiber";
+import * as THREE from "three";
+import React, { useRef, Suspense } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
 import {
-  Stats,
-  OrbitControls,
-  Effects as EffectsComposer
-} from "@react-three/drei";
+  DebugLayerMaterial,
+  LayerMaterial,
+  Depth,
+  Color,
+  Fresnel,
+  Noise,
+  Normal,
+} from "lamina";
+import { Vector3 } from "three";
 
-import { Debug, Physics, usePlane, useSphere } from "@react-three/cannon";
-import * as three from "three";
-import "./styles.css";
-import { useSpring, animated, config } from "@react-spring/three";
-
-import { UnrealBloomPass } from "three-stdlib";
-import { useControls } from "leva";
-import { Effects } from "@react-three/drei";
-
-import AA, { Shape2, CardPlanet } from "./Text";
-import Planet, { Tt } from "./Planet";
-import ItemList from "./LoopCreation";
-// import { Effects, BloomPerso } from "./Effects";
-import FrameLimiter, { FPSLimiter } from "./FrameLimiter";
-extend({ UnrealBloomPass });
-
-const ButtonChangeState = ({ infoEtoile, aa, ...args }) => {
-  let IMAGES = [
-    { rotation: 0, position: [-2, 1, 1], radius: 1, freq: 30, text: "Z" },
-    { rotation: 45, position: [-1, 1, 1], radius: 2, freq: 60, text: "R" },
-    { rotation: 90, position: [-0, 1, 1], radius: 3, freq: 90, text: "T" }
-  ];
+export default function App() {
+  const props = { base: "#ff4eb8", colorA: "#00ffff", colorB: "#ff00e3" };
   return (
-    <>
-      <animated.mesh
-        // position={[Math.cos(sphereX), Math.sin(sphereX), 0]}
-        {...args}
-        onClick={(x) => {
-          infoEtoile.map((x) => (x.radius = x.radius + 1));
-          // console.log(IMAGES);
-          aa(infoEtoile);
-          // console.log(x.getWorldPosition(tt));
-        }}
-      >
-        <boxBufferGeometry args={[1, 1, 1]} />
-        <meshBasicMaterial color={[255, 10, 1]} toneMapped={false} />
-      </animated.mesh>
-    </>
-  );
-};
-
-const Scene = () => {
-  useFrame(({ gl, scene, camera }) => {
-    // console.log(camera.position);
-    // myMesh2.current!.geometry.lookAt(0, 0, 0);
-    // myMesh.current.BufferGeometry.computeBoundingBox();
-    // myMesh2.current!.geometry.computeBoundingBox();
-    // console.log(myMesh.current!.buffergeometry.getattribute("boundingbox"));
-  }, 1);
-  const IMAGES = [
-    {
-      rotation: 0,
-      position: [-2, 1, 1],
-      radius: 1,
-      freq: 30,
-      text: "A",
-      colorMap: "/earth.jpg"
-    },
-    {
-      rotation: 45,
-      position: [-1, 1, 1],
-      radius: 2,
-      freq: 60,
-      text: ">TTT",
-      colorMap: "/earth.jpg"
-    },
-    {
-      rotation: 90,
-      position: [-0, 1, 1],
-      radius: 3,
-      freq: 90,
-      text: "HHHHHHHHHHH",
-      colorMap: "/earth.jpg"
-    }
-  ];
-
-  const [infoEtoile, setInfoEtoile] = useState(IMAGES);
-
-  function AA(x) {
-    setInfoEtoile(x);
-    console.log(x);
-  }
-
-  return (
-    <>
-      <gridHelper />
-      <axesHelper />
-      <pointLight intensity={1.0} position={[5, 3, 5]} />
-      <ButtonChangeState infoEtoile={infoEtoile} aa={AA} position={[1, 1, 1]} />
-      {/* <Cube position={[-2, 1, 1]} /> */}
-      {/* <MyRotatingBox position={[-1, 1, 1]} /> */}
-      {/* <Effects /> */}
-      {infoEtoile.map((image, i) => (
-        <>
-          <Planet
-            key={i}
-            image={image}
-            rotationx={image.rotation}
-            rotationy={image.rotation}
-            position={image.position}
-            radius={image.radius}
-            colorMap={image.colorMap}
+    <Canvas
+      shadows
+      dpr={[1, 2]}
+      camera={{ position: [2, 0, 0], fov: 80 }}
+      style={{ height: "500px" }}
+    >
+      <Suspense fallback={null}>
+        <Bg {...props} />
+        <Flower {...props} />
+        <mesh>
+          <sphereGeometry args={[0.2, 64, 64]} />
+          <meshPhysicalMaterial
+            transmission={1}
+            thickness={10}
+            roughness={0.2}
           />
-        </>
-      ))}
-    </>
+        </mesh>
+        <OrbitControls />
+        <directionalLight
+          intensity={2}
+          castShadow
+          shadow-mapSize-height={1024}
+          shadow-mapSize-width={1024}
+        />
+        <ambientLight intensity={0.4} />
+      </Suspense>
+    </Canvas>
   );
-};
+}
 
-const App = () => {
-  const cam = useRef<three.Mesh>();
-  // const aspect = useMemo(() => new three.Vector2(100, 100), []);
-  const { intensity, radius } = useControls({
-    intensity: { value: 1, min: 0, max: 1.5, step: 0.01 },
-    radius: { value: 0.4, min: 0, max: 1, step: 0.01 }
+function Bg() {
+  const mesh = useRef();
+  useFrame((state, delta) => {
+    mesh.current.rotation.x =
+      mesh.current.rotation.y =
+      mesh.current.rotation.z +=
+        delta;
   });
   return (
-    <div
-      style={{
-        height: "100vh",
-        width: "100vw"
-      }}
-    >
-      <Canvas
-        // concurrent
-        camera={{
-          near: 0.1,
-          far: 1000,
-          zoom: 1,
-          position: [4, 4, 4]
-        }}
-        onCreated={({ gl, camera }) => {
-          gl.setClearColor("#252934");
-          camera.lookAt(0, 0, 0);
-          camera.position.set(4, 4, 4);
-        }}
-      >
-        {/* <FrameLimiter /> */}
-        <FPSLimiter />
-        <Effects disableGamma>
-          {/* threshhold has to be 1, so nothing at all gets bloom by default */}
-          <unrealBloomPass threshold={1} strength={intensity} radius={radius} />
-        </Effects>
-        {/* <Camera /> */}
-        {/* <Shape color={[1, 4, 0.5]} position={[2, 0, 0]}>
-          <circleGeometry args={[0.8, 64]} />
-        </Shape> */}
-        {/* <Cube color={[1, 4, 0.5]} position={[-2, 1, 1]} /> */}
-        <Stats />
-        <OrbitControls />
-        <Suspense fallback={null}>
-          <Physics allowSleep={false} gravity={[0, 0, 0]}>
-            <Scene />
-            <Tt />
-          </Physics>
-        </Suspense>
-      </Canvas>
-    </div>
+    <mesh ref={mesh} scale={100}>
+      <sphereGeometry args={[1, 64, 64]} />
+      <LayerMaterial color="#f0aed2" attach="material" side={THREE.BackSide}>
+        <Depth
+          colorA="blue"
+          colorB="#00aaff"
+          alpha={0.5}
+          mode="multiply"
+          near={0}
+          far={300}
+          origin={[10, 10, 10]}
+        />
+        <Depth
+          colorA="#ff0000"
+          colorB="#00aaff"
+          alpha={0.5}
+          mode="multiply"
+          near={0}
+          far={300}
+          origin={[100, 100, 100]}
+        />
+      </LayerMaterial>
+    </mesh>
   );
-};
+}
 
-export default App;
+const vec = new Vector3(0, 0, 0);
+function Flower({ base, colorA, colorB }) {
+  const mesh = useRef();
+  const depth = useRef();
+  useFrame((state, delta) => {
+    mesh.current.rotation.z += delta / 2;
+    depth.current.origin.set(-state.mouse.y, state.mouse.x, 0);
+  });
+  return (
+    <mesh
+      castShadow
+      receiveShadow
+      rotation-y={Math.PI / 2}
+      scale={[2, 2, 2]}
+      ref={mesh}
+    >
+      <torusKnotGeometry args={[0.4, 0.05, 400, 8, 3, 7]} />
+      <DebugLayerMaterial color="#ff4eb8" name={"Flower"}>
+        <Color color={"#ff4eb8"} />
+        <Depth
+          far={3}
+          origin={[1, 1, 1]}
+          colorA="#ff00e3"
+          colorB="#00ffff"
+          alpha={0.5}
+          mode={"multiply"}
+          mapping="camera"
+        />
+        <Depth
+          ref={depth}
+          near={0.25}
+          far={2}
+          colorA={"#ffe100"}
+          alpha={0.5}
+          mode={"lighten"}
+          mapping={"vector"}
+        />
+        <Fresnel mode={"softlight"} />
+      </DebugLayerMaterial>
+    </mesh>
+  );
+}
